@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>KAO260075 ichki baholash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  --bg:#F3F5F6; --surface:#FFFFFF; --surface-2:#EAEEF0; --line:#D9E0E3;
+  --ink:#152A33; --ink-2:#4A5E66; --ink-3:#7C8C92;
+  --accent:#0E6E75; --accent-soft:#D6ECEC;
+  --ok:#2F8A57; --ok-soft:#DCF0E3;
+  --warn:#C98512; --warn-soft:#F8EACF;
+  --bad:#C4473B; --bad-soft:#F6DCD8;
+  --shadow:0 1px 2px rgba(21,42,51,.06),0 4px 16px rgba(21,42,51,.05);
+  --f-display:"Unbounded","Onest",system-ui,sans-serif;
+  --f-body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  color-scheme:dark;
+  --bg:#0F1A1F; --surface:#16252B; --surface-2:#1D2F36; --line:#2A3F47;
+  --ink:#E6EEF0; --ink-2:#A9BBC1; --ink-3:#75898F;
+  --accent:#4FB8BE; --accent-soft:#173C40;
+  --ok:#4DBB7C; --ok-soft:#173828; --warn:#E3A53B; --warn-soft:#3D2F14; --bad:#E7695C; --bad-soft:#442320;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F1A1F; --surface:#16252B; --surface-2:#1D2F36; --line:#2A3F47;
+  --ink:#E6EEF0; --ink-2:#A9BBC1; --ink-3:#75898F;
+  --accent:#4FB8BE; --accent-soft:#173C40;
+  --ok:#4DBB7C; --ok-soft:#173828; --warn:#E3A53B; --warn-soft:#3D2F14; --bad:#E7695C; --bad-soft:#442320;
+  --shadow:0 1px 2px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+html{color-scheme:light}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;padding:28px 20px 60px}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+h1,h2,h3{margin:0;text-wrap:balance}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;gap:18px 28px;align-items:flex-end;justify-content:space-between}
+.top h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,3.2vw,32px);letter-spacing:-.01em}
+.top p{margin:6px 0 0;color:var(--ink-2);max-width:60ch}
+.deadline{display:flex;gap:14px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.deadline .big{font-family:var(--f-display);font-size:26px;font-weight:700;color:var(--bad);line-height:1}
+.deadline small{display:block;color:var(--ink-2);font-size:12.5px}
+
+/* live badge */
+.live{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px 12px;margin-top:10px}
+.live i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:pulse 2s infinite}
+.live.stale i{background:var(--warn);animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(47,138,87,.5)}70%{box-shadow:0 0 0 8px rgba(47,138,87,0)}100%{box-shadow:0 0 0 0 rgba(47,138,87,0)}}
+
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;border-bottom:1px solid var(--line);padding-bottom:0}
+.tab{appearance:none;border:0;background:none;color:var(--ink-2);font:inherit;font-weight:600;padding:10px 14px;border-bottom:3px solid transparent;cursor:pointer;display:flex;gap:10px;align-items:center;margin-bottom:-1px}
+.tab .pct{font-family:var(--f-mono);font-size:12.5px;padding:2px 7px;border-radius:99px;background:var(--surface-2);color:var(--ink-2)}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.tab[aria-selected="true"] .pct{background:var(--accent-soft);color:var(--accent)}
+.tab:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.subtitle{color:var(--ink-2);margin:-6px 0 0}
+
+/* summary */
+.summary{display:grid;grid-template-columns:minmax(230px,300px) 1fr;gap:18px}
+@media (max-width:760px){.summary{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.ring-box{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.ring-box svg{width:170px;height:170px}
+.legend{display:flex;flex-direction:column;gap:6px;width:100%}
+.legend div{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:14px}
+.dot{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:8px;vertical-align:-1px}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:560px){.kpis{grid-template-columns:1fr}}
+.kpi{display:flex;flex-direction:column;gap:6px}
+.kpi .v{font-family:var(--f-display);font-size:28px;font-weight:700;line-height:1.05}
+.kpi .v span{font-size:15px;color:var(--ink-3);font-weight:500}
+.kpi .note{color:var(--ink-2);font-size:13px}
+.bar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden;display:flex}
+.bar i{display:block;height:100%}
+.right{display:flex;flex-direction:column;gap:14px}
+.callout{border-radius:12px;padding:14px 16px;background:var(--bad-soft);color:var(--ink);display:flex;gap:12px;align-items:flex-start;font-size:14px}
+.callout b{color:var(--bad)}
+.callout.info{background:var(--accent-soft)}
+.callout.info b{color:var(--accent)}
+.callout svg{flex:none;margin-top:2px}
+
+/* chapters */
+.section-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.section-h h2{font-family:var(--f-display);font-weight:500;font-size:18px}
+.section-h .hint{color:var(--ink-3);font-size:13px}
+.chapters{display:flex;flex-direction:column}
+.ch{display:grid;grid-template-columns:34px minmax(0,1.3fr) minmax(160px,1fr) 64px;gap:14px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.ch:first-child{border-top:0}
+.ch .no{font-family:var(--f-mono);font-weight:600;color:var(--ink-3)}
+.ch .nm{font-weight:600}
+.ch .nm small{display:block;font-weight:400;color:var(--ink-2);font-size:12.5px}
+.ch .bar{height:12px}
+.ch .p{font-family:var(--f-mono);font-weight:600;text-align:right}
+@media (max-width:640px){.ch{grid-template-columns:28px 1fr 54px}.ch .bar{grid-column:2/4;grid-row:2}}
+.p.good{color:var(--ok)}.p.mid{color:var(--warn)}.p.low{color:var(--bad)}
+
+/* map */
+.map{display:flex;flex-direction:column;gap:14px}
+.map-row{display:grid;grid-template-columns:34px 1fr;gap:12px;align-items:start}
+.map-row .no{font-family:var(--f-mono);color:var(--ink-3);font-weight:600;padding-top:4px}
+.cells{display:flex;flex-wrap:wrap;gap:4px}
+.cell{appearance:none;border:0;font-family:var(--f-mono);font-size:10.5px;font-weight:600;width:46px;height:26px;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative}
+.cell.full{background:var(--ok-soft);color:var(--ok)}
+.cell.partial{background:var(--warn-soft);color:var(--warn)}
+.cell.empty{background:var(--bad);color:#fff}
+.cell.star::after{content:"";position:absolute;top:3px;right:3px;width:5px;height:5px;border-radius:50%;background:currentColor}
+.cell.empty.star::after{background:#fff}
+.cell.gap{margin-left:8px}
+.cell:hover{filter:brightness(.95);transform:translateY(-1px)}
+.cell[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:1px}
+.detail{min-height:64px;border-radius:12px;background:var(--surface-2);padding:14px 16px;font-size:14px}
+.detail .dn{font-family:var(--f-mono);font-weight:600;margin-right:8px}
+.detail ul{margin:8px 0 0;padding-left:18px}
+.maplegend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--ink-2)}
+
+/* lists */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:860px){.two{grid-template-columns:1fr}}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);font:inherit;font-size:13px;font-weight:600;padding:5px 11px;border-radius:99px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--surface)}
+.tbl-wrap{overflow:auto;max-height:640px}
+thead th{position:sticky;top:0;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);font-weight:600;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.n{font-family:var(--f-mono);font-weight:600;white-space:nowrap}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.pill.full{background:var(--ok-soft);color:var(--ok)}
+.pill.partial{background:var(--warn-soft);color:var(--warn)}
+.pill.empty{background:var(--bad-soft);color:var(--bad)}
+.need{color:var(--ink-2);font-size:12.5px;margin-top:3px}
+.star-t{color:var(--bad);font-weight:700}
+.extras{display:flex;flex-direction:column}
+.ex{display:grid;grid-template-columns:22px 1fr auto;gap:10px;padding:10px 0;border-top:1px solid var(--line);align-items:start;font-size:13.5px}
+.ex:first-child{border-top:0}
+.ex .ic{width:18px;height:18px;border-radius:5px;border:2px solid var(--bad);margin-top:1px}
+.ex .ic.ok{background:var(--ok);border-color:var(--ok)}
+.foot{color:var(--ink-3);font-size:12.5px;max-width:80ch}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.stack{display:flex;flex-direction:column;gap:22px}
+.stack-sm{display:flex;flex-direction:column;gap:10px}
+.muted{color:var(--ink-2);font-size:13.5px;margin:6px 0 0}
+a{color:var(--accent)}
+.sitenav{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding-top:6px}
+.sitenav a{color:var(--ink-2);text-decoration:none;font-weight:600;padding:10px 14px;border-bottom:3px solid transparent;margin-bottom:-1px}
+.sitenav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+.sitenav a:hover{color:var(--ink)}
+.crumbs{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-weight:600;font-size:14px}
+.crumbs a{text-decoration:none}
+#pager{display:flex;gap:14px;align-items:center}
+.rep-title{font-family:var(--f-display);font-weight:700;font-size:clamp(20px,2.6vw,26px);margin-top:4px}
+.callout.warn{background:var(--warn-soft)}.callout.warn b{color:var(--warn)}
+.hero-grid{display:grid;grid-template-columns:minmax(260px,340px) 1fr;gap:18px}
+@media (max-width:820px){.hero-grid{grid-template-columns:1fr}}
+.hero-main{display:flex;flex-direction:column;gap:8px}
+.hero-num{font-family:var(--f-display);font-weight:700;font-size:56px;line-height:1}
+.hero-sub{color:var(--ink-2);font-size:13.5px}
+.split{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px;border-top:1px solid var(--line);padding-top:12px}
+.split b{display:block;font-family:var(--f-display);font-size:22px}
+.split span{font-size:12px;color:var(--ink-2)}
+.good{color:var(--ok)}.mid{color:var(--warn)}.low{color:var(--bad)}
+a.kpi.link{text-decoration:none;color:inherit}
+a.kpi.link:hover{border-color:var(--accent)}
+.rank{display:flex;flex-direction:column;margin-top:6px}
+.rk{display:grid;grid-template-columns:28px minmax(0,1.2fr) minmax(150px,1fr) 64px;gap:14px;align-items:center;padding:10px 6px;border-top:1px solid var(--line);text-decoration:none;color:inherit;border-radius:8px}
+.rk:first-child{border-top:0}
+.rk:hover{background:var(--surface-2)}
+.rk-i{color:var(--ink-3);font-weight:600}
+.rk-n{font-weight:600}
+.rk-n small,.rk-b small{display:block;font-weight:400;color:var(--ink-2);font-size:12px;margin-top:3px}
+.rk-b .bar{height:10px}
+.rk-p{text-align:right;font-weight:600}
+@media (max-width:640px){.rk{grid-template-columns:24px 1fr 56px}.rk-b{grid-column:2/4;grid-row:2}}
+.heat-wrap{max-height:none;margin-top:10px}
+.heat{min-width:640px}
+.heat th.c,.heat td.c,td.c,th.c{text-align:center}
+.hn{font-weight:600}.hn a{color:var(--ink);text-decoration:none}.hn a:hover{color:var(--accent)}
+.hn small{display:block;color:var(--ink-3);font-weight:400;font-size:11.5px}
+.hc{text-align:center;font-family:var(--f-mono);font-weight:600;font-size:13px;border-left:3px solid var(--surface)}
+.hc.good{background:var(--ok-soft);color:var(--ok)}
+.hc.mid{background:var(--warn-soft);color:var(--warn)}
+.hc.low{background:var(--bad-soft);color:var(--bad)}
+.hc.tot{border-left-width:8px}
+tfoot td{border-top:2px solid var(--line)}
+.chap-key{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12.5px;color:var(--ink-2);margin-top:12px}
+.chap-key b{font-family:var(--f-mono);color:var(--ink)}
+ul.plain{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column}
+ul.plain li{padding:8px 0;border-top:1px solid var(--line);font-size:14px}
+ul.plain li:first-child{border-top:0}
+.tag{display:inline-block;font-size:11px;font-weight:600;color:var(--ink-2);background:var(--surface-2);border-radius:99px;padding:1px 8px;margin-left:4px;white-space:nowrap}
+.list-tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.list-tools input{flex:1 1 280px;font:inherit;padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.list-tools input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.card{display:flex;flex-direction:column;gap:8px;text-decoration:none;color:inherit;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--accent)}
+.card-top{display:flex;justify-content:space-between;align-items:center}
+.card .code{color:var(--ink-3);font-size:12.5px;font-weight:600}
+.card-name{font-weight:600;font-size:15.5px;line-height:1.3;min-height:2.6em}
+.card-p{font-family:var(--f-display);font-weight:700;font-size:30px;line-height:1}
+.card .bar{height:10px}
+.card-stats{display:flex;gap:12px;font-size:12.5px;color:var(--ink-2)}
+.card-stats b{color:var(--ink)}
+.card-foot{font-size:12px;color:var(--ink-3);border-top:1px solid var(--line);padding-top:8px}
+.tbl-wrap{margin-top:10px}
+.tbl-wrap.tall{max-height:720px}
+.mini{height:4px;background:var(--surface-2);border-radius:99px;margin-top:6px;overflow:hidden}
+.mini i{display:block;height:100%;background:var(--bad)}
+
+.delta{display:block;font-size:11px;color:var(--ok);font-weight:600}
+ul.plain .delta{display:inline;margin-left:6px}
+.rk-p small.delta{text-align:right}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Ariza №KAO260075 · Ichki baholash</div>
+      <h1>Hisobotlarni to‘ldirish holati</h1>
+      <p id="lead">Har bir taʼlim dasturi va kompleks hisobot bo‘yicha izoh va asoslovchi hujjatlar qanchalik kiritilgani.</p>
+      <span class="live" id="live"><i></i><span id="liveTxt">Live</span></span>
+    </div>
+    <div class="deadline">
+      <div class="big" id="daysLeft">–</div>
+      <div><b>kun qoldi</b><small id="deadlineTxt">Muddat: 28.09.2026, 23:59</small></div>
+    </div>
+  </header>
+
+  <nav class="sitenav" aria-label="Bo‘limlar">
+    <a href="#umumiy" id="nav_home">Umumiy ko‘rinish</a>
+    <a href="#dasturlar" id="nav_list">Dasturlar</a>
+    <a href="#kompleks" id="nav_complex">Kompleks hisobot</a>
+    <a href="#takroriy" id="nav_gaps">Takroriy bo‘shliqlar</a>
+  </nav>
+
+  <main id="view"></main>
+
+  <p class="foot">Holat sahifadagi izoh hisoblagichi (masalan “73 / 600”) va asosiy hujjat kataklariga yuklangan fayllar bo‘yicha aniqlangan. “Qisman” — izoh yoki kerakli hujjatlardan biri yetishmaydi. Ko‘rsatkichlar <b id="footUpd">—</b> holatiga tegishli; sahifa yangi maʼlumot kelganda o‘zi yangilanadi.</p>
+</div>
+
+<template id="tpl-report">
+  <div class="stack">
+    <div class="crumbs"><a href="#dasturlar">← Barcha dasturlar</a><span id="pager"></span></div>
+    <div class="rep-head">
+      <div>
+        <div class="eyebrow" id="r_eyebrow"></div>
+        <h2 class="rep-title" id="r_title"></h2>
+      </div>
+    </div>
+    <section class="summary">
+      <div class="panel ring-box">
+        <div class="eyebrow">Umumiy tayyorlik</div>
+        <svg viewBox="0 0 170 170" id="ring" aria-label="Tayyorlik diagrammasi"></svg>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="right">
+        <div class="kpis" id="kpis"></div>
+        <div id="callouts" class="stack-sm"></div>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="section-h"><h2>Boblar bo‘yicha</h2><span class="hint">Yashil — to‘liq · sariq — qisman · qizil — bo‘sh</span></div>
+      <div class="chapters" id="chapters"></div>
+    </section>
+    <section class="panel map">
+      <div class="section-h"><h2>Indikatorlar xaritasi</h2><span class="hint">Katakchani bosing — nima yetishmasligi chiqadi</span></div>
+      <div class="maplegend">
+        <span><i class="dot" style="background:var(--ok-soft);outline:1px solid var(--ok)"></i>To‘liq</span>
+        <span><i class="dot" style="background:var(--warn-soft);outline:1px solid var(--warn)"></i>Qisman</span>
+        <span><i class="dot" style="background:var(--bad)"></i>Bo‘sh</span>
+        <span>● — muhim (*) indikator</span>
+      </div>
+      <div id="map" class="map"></div>
+      <div class="detail" id="detail">Indikator tanlanmagan.</div>
+    </section>
+    <section class="two">
+      <div class="panel">
+        <div class="section-h"><h2>Nima qilish kerak</h2><div class="filters" id="filters"></div></div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>№</th><th>Indikator</th><th>Holat</th></tr></thead>
+          <tbody id="todo"></tbody>
+        </table></div>
+      </div>
+      <div class="panel">
+        <div class="section-h"><h2>Qo‘shimcha maʼlumotlar</h2><span class="hint" id="exHint"></span></div>
+        <div class="extras" id="extras"></div>
+      </div>
+    </section>
+  </div>
+</template>
+
+<script>
+/*__DATA__*/
+const LBL=["To‘liq","Qisman","Bo‘sh"], CLS=["full","partial","empty"];
+const $=id=>document.getElementById(id);
+const pct=(a,b)=>b?Math.round(a/b*1000)/10:0;
+const fmt=v=>String(v).replace('.',',');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tone=p=>p>=80?'good':p>=50?'mid':'low';
+const toneVar=p=>p>=80?'var(--ok)':p>=50?'var(--warn)':'var(--bad)';
+(function(){const end=new Date(META.deadline);const d=Math.floor((end-new Date())/864e5);$('daysLeft').textContent=d>0?d:0;
+  const p2=n=>String(n).padStart(2,'0');$('deadlineTxt').textContent=`Muddat: ${p2(end.getDate())}.${p2(end.getMonth()+1)}.${end.getFullYear()}, ${p2(end.getHours())}:${p2(end.getMinutes())}`;})();
+
+// ---------- live ----------
+function fmtTime(iso){if(!iso)return '—';const d=new Date(iso);const p2=n=>String(n).padStart(2,'0');return `${p2(d.getDate())}.${p2(d.getMonth()+1)}.${d.getFullYear()}, ${p2(d.getHours())}:${p2(d.getMinutes())}`;}
+function ago(iso){if(!iso)return '';const m=Math.round((Date.now()-new Date(iso))/6e4);if(m<1)return 'hozirgina';if(m<60)return m+' daqiqa oldin';const h=Math.round(m/60);if(h<24)return h+' soat oldin';return Math.round(h/24)+' kun oldin';}
+function paintLive(){$('footUpd').textContent=fmtTime(META.updatedAt);$('liveTxt').textContent=`Live · oxirgi yangilanish: ${fmtTime(META.updatedAt)} (${ago(META.updatedAt)})`;
+  $('live').classList.toggle('stale',!META.updatedAt||Date.now()-new Date(META.updatedAt)>2*36e5);}
+paintLive(); setInterval(paintLive,30000);
+setInterval(async()=>{try{const v=await fetch('/api/version',{cache:'no-store'}).then(r=>r.json());if(v.updatedAt&&v.updatedAt!==META.updatedAt){const y=window.scrollY;sessionStorage.setItem('akk_y',y);location.reload();}}catch(e){}},60000);
+window.addEventListener('load',()=>{try{const y=sessionStorage.getItem('akk_y');if(y){sessionStorage.removeItem('akk_y');setTimeout(()=>window.scrollTo(0,+y),50);}}catch(e){}});
+
+// normalise reports
+function rep(o,kind){
+  const T=D.titles[kind];
+  return {kind,chapters:D.chapters[kind],concl:o.concl,
+    extras:(o.ex||[]).map(([l,r,u])=>({l,r:!!r,u:!!u})),
+    rows:(o.rows||[]).map(([n,s,c,d,nd,m,x])=>({n,s:CLS[s],si:s,c,d,nd,m,x,t:(T[n]||[n])[0],st:!!(T[n]||[])[1]}))};
+}
+function stats(rows){const s={n:rows.length,full:0,partial:0,empty:0,d:0,nd:0,c:0};rows.forEach(r=>{s[r.s]++;s.d+=r.d;s.nd+=r.nd;if(r.c>0)s.c++;});s.p=pct(s.full,s.n);return s;}
+const COMPLEX=rep(D.complex||{rows:[],ex:[]},'c'); COMPLEX.prev=D.complex?D.complex.prev:null;
+const CN=COMPLEX.rows.length||272;
+const PROGS=D.programs.map(p=>{const q={...p}; if(p.rows){q.R=rep(p,'p');q.S=stats(q.R.rows);} return q;});
+const SENT=PROGS.filter(p=>p.R).sort((a,b)=>b.S.p-a.S.p);
+const LEVEL=PROGS.filter(p=>p.id&&!p.R);
+const UPD=SENT.filter(p=>p.prev!=null);
+
+// ---------- views ----------
+let first=true;
+function setNav(k){['home','list','complex','gaps'].forEach(x=>$('nav_'+x).setAttribute('aria-current',x===k?'page':'false'));}
+function route(){
+  const h=location.hash.slice(1)||'umumiy';
+  if(!first)window.scrollTo(0,0); first=false;
+  if(h==='kompleks'){setNav('complex');return showReport(COMPLEX,{eyebrow:`Butun muassasa bo‘yicha · ${Object.keys(D.chapters.c).length} bob · ${CN} indikator`,title:'Kompleks davlat akkreditatsiyasi hisoboti',complex:true,prevC:COMPLEX.prev});}
+  if(h.startsWith('p')){const p=PROGS.find(x=>'p'+x.id===h&&x.R); if(p){setNav('list');return showReport(p.R,{eyebrow:`${p.code} · ${p.level} · ${p.form}`,title:p.name,prog:p});}}
+  if(h==='dasturlar'){setNav('list');return showList();}
+  if(h==='takroriy'){setNav('gaps');return showGaps();}
+  setNav('home');showHome();
+}
+window.addEventListener('hashchange',route);
+
+function progBar(s){return `<div class="bar"><i style="width:${pct(s.full,s.n)}%;background:var(--ok)"></i><i style="width:${pct(s.partial,s.n)}%;background:var(--warn)"></i><i style="width:${pct(s.empty,s.n)}%;background:var(--bad)"></i></div>`;}
+
+function showHome(){
+  const all=SENT.reduce((a,p)=>{a.full+=p.S.full;a.n+=p.S.n;a.d+=p.S.d;a.nd+=p.S.nd;a.c+=p.S.c;return a;},{full:0,n:0,d:0,nd:0,c:0});
+  const avg=pct(all.full,all.n);
+  const g80=SENT.filter(p=>p.S.p>=80).length, g50=SENT.filter(p=>p.S.p>=50&&p.S.p<80).length, low=SENT.filter(p=>p.S.p<50).length;
+  const cs=stats(COMPLEX.rows);
+  const withId=PROGS.filter(p=>p.id).length;
+  const chapK=Object.keys(D.chapters.p);
+  const heat=SENT.map(p=>{
+    const cells=chapK.map(k=>{const s=stats(p.R.rows.filter(r=>r.n.split('.')[0]===k));return `<td class="hc ${tone(s.p)}" title="${k}-bob: ${fmt(s.p)}%">${Math.round(s.p)}</td>`;}).join('');
+    return `<tr><td class="hn"><a href="#p${p.id}">${esc(p.name)}</a><small>${p.code} · ${p.form}</small></td>${cells}<td class="hc tot ${tone(p.S.p)}">${Math.round(p.S.p)}%</td></tr>`;}).join('');
+  const chapAvg=chapK.map(k=>{let f=0,n=0;SENT.forEach(p=>p.R.rows.forEach(r=>{if(r.n.split('.')[0]===k){n++;if(r.s==='full')f++;}}));return pct(f,n);});
+  $('view').innerHTML=`<div class="stack">
+    <section class="hero-grid">
+      <div class="panel hero-main">
+        <div class="eyebrow">Yuborilgan dasturlar bo‘yicha o‘rtacha tayyorlik</div>
+        <div class="hero-num ${tone(avg)}">${fmt(avg)}%</div>
+        <div class="hero-sub">${all.full} / ${all.n} indikator to‘liq · ${SENT.length} ta dastur tahlil qilindi</div>
+        <div class="split">
+          <div><b class="good">${g80}</b><span>80% va undan yuqori</span></div>
+          <div><b class="mid">${g50}</b><span>50–80%</span></div>
+          <div><b class="low">${low}</b><span>50% dan past</span></div>
+        </div>
+      </div>
+      <div class="kpis">
+        <div class="panel kpi"><div class="eyebrow">Tahlil qilingan</div><div class="v">${SENT.length}<span> / ${withId} dastur</span></div><div class="bar"><i style="width:${pct(SENT.length,withId)}%;background:var(--accent)"></i></div><div class="note">${LEVEL.length} ta dastur sahifasi hali o‘qilmagan</div></div>
+        <div class="panel kpi"><div class="eyebrow">Hujjatlar yuklangan</div><div class="v">${fmt(pct(all.d,all.nd))}%<span> · ${all.d}/${all.nd}</span></div><div class="bar"><i style="width:${pct(all.d,all.nd)}%;background:${toneVar(pct(all.d,all.nd))}"></i></div><div class="note">Asosiy hujjat kataklari, barcha dasturlar</div></div>
+        <a class="panel kpi link" href="#kompleks"><div class="eyebrow">Kompleks hisobot →</div><div class="v">${fmt(cs.p)}%<span> · ${cs.full}/${cs.n}</span></div><div class="bar"><i style="width:${cs.p}%;background:${toneVar(cs.p)}"></i></div><div class="note">${COMPLEX.prev!=null?`${cs.full-COMPLEX.prev>=0?'▲ +':'▼ '}${cs.full-COMPLEX.prev} indikator (${fmt(pct(COMPLEX.prev,CN))}% edi) · `:''}Dastur hisobotlari yuborilmaguncha jo‘natib bo‘lmaydi</div></a>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="section-h"><h2>Dasturlar reytingi</h2><span class="hint">Nomini bosing — dastur sahifasi ochiladi</span></div>
+      <div class="rank" id="rank"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-h"><h2>Boblar kesimida (to‘liq indikatorlar, %)</h2><span class="hint">1–${chapK.length} boblar</span></div>
+      <div class="tbl-wrap heat-wrap"><table class="heat">
+        <thead><tr><th>Dastur</th>${chapK.map(k=>`<th class="c" title="${esc(D.chapters.p[k])}">${k}-bob</th>`).join('')}<th class="c">Jami</th></tr></thead>
+        <tbody>${heat}</tbody>
+        <tfoot><tr><td class="hn"><b>O‘rtacha</b></td>${chapAvg.map(v=>`<td class="hc ${tone(v)}">${Math.round(v)}</td>`).join('')}<td class="hc tot ${tone(avg)}">${Math.round(avg)}%</td></tr></tfoot>
+      </table></div>
+      <div class="chap-key">${chapK.map(k=>`<span><b>${k}</b> ${esc(D.chapters.p[k].replace(/ yoʻnalishi$/,''))}</span>`).join('')}</div>
+    </section>
+
+    <section class="two">
+      <div class="panel">
+        <div class="section-h"><h2>Hali o‘qilmagan dasturlar</h2><span class="hint">${LEVEL.length} ta</span></div>
+        ${LEVEL.length?`<ul class="plain">${LEVEL.map(p=>`<li><span class="mono">${p.code}</span> ${esc(p.name)} <span class="tag">${p.form}</span></li>`).join('')}</ul>`:'<p class="muted">Barcha dasturlar o‘qilgan.</p>'}
+      </div>
+      <div class="panel">
+        <div class="section-h"><h2>O‘zgargan dasturlar</h2><span class="hint">oldingi holatga nisbatan</span></div>
+        ${UPD.length?`<ul class="plain">${UPD.map(p=>{const dd=p.S.full-p.prev;return `<li><a href="#p${p.id}">${esc(p.name)}</a> <span class="tag">${p.form}</span> <span class="mono">${fmt(pct(p.prev,p.S.n))}% → <b class="${tone(p.S.p)}">${fmt(p.S.p)}%</b></span> <span class="delta"${dd<0?' style="color:var(--bad)"':''}>${dd>=0?'+':''}${dd} indikator</span></li>`;}).join('')}</ul>`:'<p class="muted">Hali o‘zgargan dastur yo‘q.</p>'}
+        <p class="muted">Portalda to‘ldirilgan o‘zgarishlar keyingi sinxronlashda shu yerda ko‘rinadi.</p>
+      </div>
+    </section>
+  </div>`;
+  $('rank').innerHTML=SENT.map((p,i)=>`<a class="rk" href="#p${p.id}">
+      <span class="rk-i mono">${i+1}</span>
+      <span class="rk-n">${esc(p.name)}<small>${p.code} · ${p.level} · ${p.form}</small></span>
+      <span class="rk-b">${progBar(p.S)}<small>${p.S.full} to‘liq · ${p.S.partial} qisman · ${p.S.empty} bo‘sh</small></span>
+      <span class="rk-p mono ${tone(p.S.p)}">${fmt(p.S.p)}%${p.prev!=null?`<small class="delta">${p.S.full-p.prev>=0?'▲ +':'▼ '}${p.S.full-p.prev}</small>`:''}</span></a>`).join('');
+}
+
+let sortKey='p', q='';
+function showList(){
+  $('view').innerHTML=`<div class="stack">
+    <div class="list-tools">
+      <input id="q" type="search" placeholder="Dastur nomi yoki kodi bo‘yicha qidirish" value="${esc(q)}" aria-label="Qidirish">
+      <div class="filters">
+        <button class="chip" id="s_p">Tayyorlik ↓</button>
+        <button class="chip" id="s_e">Bo‘sh ko‘p ↓</button>
+        <button class="chip" id="s_c">Kod bo‘yicha</button>
+      </div>
+    </div>
+    <div class="cards" id="cards"></div>
+  </div>`;
+  const draw=()=>{
+    ['p','e','c'].forEach(k=>$('s_'+k).setAttribute('aria-pressed',k===sortKey));
+    let L=SENT.filter(p=>(p.code+' '+p.name+' '+p.form).toLowerCase().includes(q.toLowerCase()));
+    L=L.slice().sort((a,b)=>sortKey==='p'?b.S.p-a.S.p:sortKey==='e'?b.S.empty-a.S.empty:a.code.localeCompare(b.code));
+    $('cards').innerHTML=L.map(p=>{
+      const ex=p.R.extras, exu=ex.filter(e=>e.u).length;
+      return `<a class="panel card" href="#p${p.id}">
+        <div class="card-top"><span class="mono code">${p.code}</span><span><span class="tag">${p.level==="Magistratura"?"Magistr":"Bakalavr"}</span><span class="tag">${p.form}</span></span></div>
+        <div class="card-name">${esc(p.name)}</div>
+        <div class="card-p ${tone(p.S.p)}">${fmt(p.S.p)}%</div>
+        ${progBar(p.S)}
+        <div class="card-stats"><span><b>${p.S.full}</b> to‘liq</span><span><b>${p.S.partial}</b> qisman</span><span><b>${p.S.empty}</b> bo‘sh</span></div>
+        <div class="card-foot">Hujjatlar ${p.S.d}/${p.S.nd} · Izoh ${p.S.c}/${p.S.n} · Qo‘shimcha ${exu}/${ex.length}</div>
+      </a>`;}).join('')||'<p class="muted">Hech narsa topilmadi.</p>';
+  };
+  $('q').oninput=e=>{q=e.target.value;draw();};
+  ['p','e','c'].forEach(k=>$('s_'+k).onclick=()=>{sortKey=k;draw();});
+  draw();
+}
+
+function showGaps(){
+  const T=D.titles.p, nums=Object.keys(T);
+  const N=SENT.length;
+  if(!N){$('view').innerHTML='<p class="muted">Maʼlumot yo‘q.</p>';return;}
+  const agg=nums.map(n=>{const st=SENT.map(p=>p.R.rows.find(r=>r.n===n)).filter(Boolean); return {n,t:T[n][0],star:T[n][1],empty:st.filter(r=>r.s==='empty').length,notfull:st.filter(r=>r.s!=='full').length,noC:st.filter(r=>r.c===0).length};});
+  agg.sort((a,b)=>b.notfull-a.notfull||b.empty-a.empty);
+  const exAgg=SENT[0].R.extras.map((e,i)=>({l:e.l,r:e.r,u:SENT.filter(p=>p.R.extras[i]&&p.R.extras[i].u).length}));
+  const conc=SENT.filter(p=>p.R.concl).length;
+  $('view').innerHTML=`<div class="stack">
+    <div class="callout info"><div><b>Bir marta tayyorlab, hammaga yuklash mumkin.</b> Quyidagi indikatorlar ko‘p dasturlarda to‘ldirilmagan. Ko‘pchiligi umumuniversitet hujjatlari (nizom, buyruq, reja), shuning uchun bitta hujjatni barcha dasturlarga qo‘yish mumkin.</div></div>
+    <section class="panel">
+      <div class="section-h"><h2>Majburiy qo‘shimcha fayllar va Xulosa</h2><span class="hint">${N} ta dastur bo‘yicha</span></div>
+      <div class="extras">${exAgg.map(e=>`<div class="ex"><span class="ic${e.u===N?' ok':''}"></span><span>${esc(e.l)}${e.r?' <span class="star-t">*</span>':''}</span><span class="mono">${e.u} / ${N}</span></div>`).join('')}
+      <div class="ex"><span class="ic${conc===N?' ok':''}"></span><span><b>Xulosa</b> <span class="star-t">*</span></span><span class="mono">${conc} / ${N}</span></div></div>
+    </section>
+    <section class="panel">
+      <div class="section-h"><h2>Eng ko‘p dasturlarda to‘ldirilmagan indikatorlar</h2><span class="hint">Qizil chiziq — shu indikator to‘liq bo‘lmagan dasturlar ulushi</span></div>
+      <div class="tbl-wrap tall"><table>
+        <thead><tr><th>№</th><th>Indikator</th><th class="c">To‘liq emas</th><th class="c">Bo‘sh</th><th class="c">Izohsiz</th></tr></thead>
+        <tbody>${agg.filter(a=>a.notfull>0).map(a=>`<tr><td class="n">${a.n}${a.star?' <span class="star-t">*</span>':''}</td><td>${esc(a.t.length>160?a.t.slice(0,157)+'…':a.t)}<div class="mini"><i style="width:${pct(a.notfull,N)}%"></i></div></td><td class="c mono">${a.notfull}/${N}</td><td class="c mono">${a.empty}</td><td class="c mono">${a.noC}</td></tr>`).join('')}</tbody>
+      </table></div>
+    </section>
+  </div>`;
+}
+
+// ---------- single report ----------
+let cur=null, filt='all';
+function showReport(r,meta){
+  cur=r; filt='all';
+  $('view').innerHTML=''; $('view').appendChild($('tpl-report').content.cloneNode(true));
+  $('r_eyebrow').textContent=meta.eyebrow+(meta.prevC!=null?` · oldingi holat ${fmt(pct(meta.prevC,CN))}% → hozir ${fmt(stats(COMPLEX.rows).p)}%`:'')+(meta.prog&&meta.prog.prev!=null?` · oldingi holat ${fmt(pct(meta.prog.prev,meta.prog.S.n))}% → hozir ${fmt(meta.prog.S.p)}%`:''); $('r_title').textContent=meta.title;
+  if(meta.prog){const i=SENT.indexOf(meta.prog);const pv=SENT[i-1],nx=SENT[i+1];
+    $('pager').innerHTML=`${pv?`<a href="#p${pv.id}">‹ oldingi</a>`:''}<span class="muted">${i+1} / ${SENT.length} (reyting bo‘yicha)</span>${nx?`<a href="#p${nx.id}">keyingi ›</a>`:''}`;}
+  else $('pager').innerHTML='';
+  const s=stats(r.rows);
+  ring(s);kpis(r,s);callouts(r,s,meta);chapters(r);map(r);todo(r);extras(r);
+}
+function ring(s){
+  const R=68,C=2*Math.PI*R;let off=0;
+  const seg=[['full','var(--ok)'],['partial','var(--warn)'],['empty','var(--bad)']].map(([k,c])=>{const len=s.n?C*s[k]/s.n:0;const el=`<circle cx="85" cy="85" r="${R}" fill="none" stroke="${c}" stroke-width="16" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 85 85)"/>`;off+=len;return el;}).join('');
+  $('ring').innerHTML=`<circle cx="85" cy="85" r="${R}" fill="none" stroke="var(--surface-2)" stroke-width="16"/>${seg}
+    <text x="85" y="86" text-anchor="middle" font-family="Unbounded,Onest,sans-serif" font-weight="700" font-size="30" fill="var(--ink)">${fmt(s.p)}%</text>
+    <text x="85" y="108" text-anchor="middle" font-family="Onest,sans-serif" font-size="12" fill="var(--ink-2)">${s.full} / ${s.n} to‘liq</text>`;
+  $('legend').innerHTML=[['full','var(--ok)'],['partial','var(--warn)'],['empty','var(--bad)']].map(([k,c],i)=>`<div><span><i class="dot" style="background:${c}"></i>${LBL[i]}</span><span class="mono">${s[k]} · ${fmt(pct(s[k],s.n))}%</span></div>`).join('');
+}
+function kpis(r,s){
+  const exU=r.extras.filter(e=>e.u).length,exR=r.extras.filter(e=>e.r),exRU=exR.filter(e=>e.u).length;
+  const k=[['Hujjatlar yuklangan',s.d,s.nd,'Indikatorlar bo‘yicha asosiy hujjat kataklari'],['Izoh yozilgan',s.c,s.n,'Asoslovchi matn kiritilgan indikatorlar'],['Qo‘shimcha fayllar',exU,r.extras.length,`Majburiylardan ${exRU} / ${exR.length}`+(r.concl?'':' · Xulosa bo‘sh')]];
+  $('kpis').innerHTML=k.map(([t,a,b,n])=>{const p=pct(a,b);return `<div class="panel kpi"><div class="eyebrow">${t}</div><div class="v">${fmt(p)}%<span> · ${a}/${b}</span></div><div class="bar"><i style="width:${p}%;background:${toneVar(p)}"></i></div><div class="note">${n}</div></div>`}).join('');
+}
+const IC_W='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--bad)"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>';
+const IC_I='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--accent)"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>';
+function callouts(r,s,meta){
+  const groups={};r.rows.forEach(x=>{const g=x.n.split('.').slice(0,2).join('.');(groups[g]=groups[g]||[]).push(x);});
+  const dead=Object.entries(groups).filter(([g,a])=>a.length>1&&a.every(x=>x.s==='empty')).map(([g])=>g);
+  const stars=r.rows.filter(x=>x.st&&x.s!=='full').map(x=>x.n);
+  const onlyText=r.rows.filter(x=>x.s==='partial'&&x.c===0&&x.m.length===0).length;
+  const side=r.rows.filter(x=>x.m.length>0&&x.x>0).map(x=>x.n);
+  let h='';
+  if(dead.length)h+=`<div class="callout">${IC_W}<div><b>Butunlay bo‘sh mezonlar (${dead.length}):</b> <span class="mono">${dead.join(', ')}</span></div></div>`;
+  if(stars.length)h+=`<div class="callout">${IC_W}<div><b>Muhim (*) indikatorlar to‘ldirilmagan:</b> <span class="mono">${stars.join(', ')}</span></div></div>`;
+  if(side.length)h+=`<div class="callout warn">${IC_W}<div><b>Fayl noto‘g‘ri joyga yuklangan bo‘lishi mumkin (${side.length}):</b> asosiy hujjat katagi bo‘sh, lekin “Yangi hujjat qo‘shish” orqali fayl qo‘yilgan — <span class="mono">${side.slice(0,14).join(', ')}${side.length>14?' …':''}</span></div></div>`;
+  if(onlyText)h+=`<div class="callout info">${IC_I}<div><b>Tez yopiladigan ${onlyText} ta indikator:</b> fayllar joyida, faqat izoh yozish qoldi.</div></div>`;
+  if(meta.complex)h+=`<div class="callout info">${IC_I}<div><b>Kompleks hisobotni hozircha yuborib bo‘lmaydi</b> — avval barcha taʼlim dasturi hisobotlari tashkilot rahbariga yuborilishi kerak.</div></div>`;
+  $('callouts').innerHTML=h;
+}
+function chapters(r){
+  $('chapters').innerHTML=Object.entries(r.chapters).map(([k,nm])=>{const s=stats(r.rows.filter(x=>x.n.split('.')[0]===k));
+    return `<div class="ch"><span class="no">${k}</span><div class="nm">${esc(nm.replace(/ yoʻnalishi$/,''))}<small>${s.n} indikator · ${s.full} to‘liq · ${s.partial} qisman · ${s.empty} bo‘sh</small></div>${progBar(s)}<span class="p ${tone(s.p)}">${fmt(s.p)}%</span></div>`;}).join('');
+}
+function map(r){
+  $('map').innerHTML=Object.keys(r.chapters).map(k=>{let prev=null;
+    const cells=r.rows.filter(x=>x.n.split('.')[0]===k).map(x=>{const g=x.n.split('.').slice(0,2).join('.');const gap=prev&&prev!==g;prev=g;
+      return `<button class="cell ${x.s}${x.st?' star':''}${gap?' gap':''}" data-n="${x.n}" aria-pressed="false" title="${esc(x.n+' — '+LBL[x.si])}">${x.n}</button>`;}).join('');
+    return `<div class="map-row"><span class="no">${k}</span><div class="cells">${cells}</div></div>`;}).join('');
+  $('map').querySelectorAll('.cell').forEach(b=>b.onclick=()=>{$('map').querySelectorAll('.cell').forEach(c=>c.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');$('detail').innerHTML=detailHtml(r.rows.find(y=>y.n===b.dataset.n));});
+}
+function needs(x){const a=[];if(x.c===0)a.push('Izoh yozilmagan');x.m.forEach(m=>a.push('Hujjat: '+m));if(x.m.length&&x.x)a.push(`${x.x} ta fayl “Yangi hujjat” sifatida qo‘shilgan`);return a;}
+function detailHtml(x){const n=needs(x);
+  return `<span class="dn">${x.n}</span><span class="pill ${x.s}">${LBL[x.si]}</span>${x.st?' <span class="star-t">*</span>':''}<div style="margin-top:6px">${esc(x.t)}</div>
+  <div class="need">Izoh: ${x.c} / 600 · Hujjatlar: ${x.d} / ${x.nd}${x.x?` · qo‘shimcha fayllar: ${x.x}`:''}</div>${n.length?`<ul>${n.map(t=>`<li>${esc(t)}</li>`).join('')}</ul>`:''}`;}
+function todo(r){
+  const opts=[['all','Barchasi'],['empty','Bo‘sh'],['partial','Qisman'],['star','Muhim *']];
+  $('filters').innerHTML=opts.map(([k,l])=>`<button class="chip" id="f_${k}" aria-pressed="${filt===k}">${l}</button>`).join('');
+  opts.forEach(([k])=>$('f_'+k).onclick=()=>{filt=k;todo(r);});
+  let rows=r.rows.filter(x=>x.s!=='full');
+  if(filt==='empty'||filt==='partial')rows=rows.filter(x=>x.s===filt);
+  if(filt==='star')rows=rows.filter(x=>x.st);
+  $('todo').innerHTML=rows.length?rows.map(x=>`<tr><td class="n">${x.n}${x.st?' <span class="star-t">*</span>':''}</td><td>${esc(x.t.length>150?x.t.slice(0,147)+'…':x.t)}<div class="need">${needs(x).map(esc).join(' · ')}</div></td><td><span class="pill ${x.s}">${LBL[x.si]}</span></td></tr>`).join(''):`<tr><td colspan="3">Bu turdagi indikator yo‘q.</td></tr>`;
+}
+function extras(r){
+  const u=r.extras.filter(e=>e.u).length;$('exHint').textContent=`${u} / ${r.extras.length} yuklangan`;
+  const items=r.extras.slice().sort((a,b)=>b.r-a.r).map(e=>`<div class="ex"><span class="ic${e.u?' ok':''}"></span><span>${esc(e.l)}${e.r?' <span class="star-t">*</span>':''}</span><span class="pill ${e.u?'full':(e.r?'empty':'partial')}">${e.u?'Yuklangan':(e.r?'Majburiy':'Ixtiyoriy')}</span></div>`);
+  items.push(`<div class="ex"><span class="ic${r.concl?' ok':''}"></span><span><b>Xulosa</b> <span class="star-t">*</span></span><span class="pill ${r.concl?'full':'empty'}">${r.concl?'Yozilgan':'Bo‘sh'}</span></div>`);
+  $('extras').innerHTML=items.join('');
+}
+route();
+</script>
+
+</body>
+</html>
