@@ -12,4 +12,4 @@ services:
       - key: SEED_URL
         value: https://new.atmu.uz/
       - key: DEADLINE
-        value: "2026-09-28T23:59:00+05:00"
+        value: "2026-09-29T23:59:00+05:00"

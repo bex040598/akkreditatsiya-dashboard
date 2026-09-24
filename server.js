@@ -7,7 +7,7 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 const PUSH_TOKEN = process.env.PUSH_TOKEN || '';            // Render > Environment da o'rnating
 const SEED_URL = process.env.SEED_URL || 'https://new.atmu.uz/';
-const DEADLINE = process.env.DEADLINE || '2026-09-28T23:59:00+05:00';
+const DEADLINE = process.env.DEADLINE || '2026-09-29T23:59:00+05:00';
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'data.json');
 const TEMPLATE = fs.readFileSync(path.join(__dirname, 'template.html'), 'utf8');
@@ -73,7 +73,7 @@ function merge(body) {
     }
   }
   STATE.updatedAt = new Date().toISOString();
-  STATE.source = 'push';
+  STATE.source = 'portal';
   save();
 }
 
@@ -101,6 +101,12 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) return send(res, 200, page(), 'text/html; charset=utf-8');
   if (req.method === 'GET' && url.pathname === '/api/version') return send(res, 200, { updatedAt: STATE.updatedAt, source: STATE.source });
   if (req.method === 'GET' && url.pathname === '/api/data') return send(res, 200, STATE);
+  if (req.method === 'GET' && url.pathname === '/akk.user.js') {
+    const proto = req.headers['x-forwarded-proto'] || 'http';
+    const origin = `${proto}://${req.headers.host}`;
+    const js = fs.readFileSync(path.join(__dirname, 'akk.user.js'), 'utf8').replace('__DASH_URL__', origin);
+    return send(res, 200, js, 'text/javascript; charset=utf-8');
+  }
   if (req.method === 'GET' && url.pathname === '/healthz') return send(res, 200, { ok: true });
   if (req.method === 'POST' && url.pathname === '/api/push') {
     if (!PUSH_TOKEN || req.headers['x-token'] !== PUSH_TOKEN) return send(res, 401, { error: 'token noto‘g‘ri' });
@@ -122,10 +128,10 @@ const server = http.createServer(async (req, res) => {
 (async () => {
   if (!loadLocal()) await seedFromUrl(true);
   server.listen(PORT, () => log('Server ishga tushdi, port', PORT));
-  // Har 5 daqiqada manbani tekshirish (userscript orqali push kelgan bo'lsa, 6 soat davomida tegilmaydi)
+  // Portal ulanmaguncha har 5 daqiqada new.atmu.uz ni tekshirish
   const POLL_MIN = +(process.env.SEED_POLL_MIN || 5);
   if (POLL_MIN > 0) setInterval(() => {
-    const pushedRecently = STATE.source === 'push' && Date.now() - new Date(STATE.updatedAt) < 6 * 36e5;
-    if (!pushedRecently) seedFromUrl(false);
+    // Portaldan maʼlumot kelgan bo'lsa, eski nusxa (new.atmu.uz) bilan ustidan yozilmaydi
+    if (STATE.source !== 'portal') seedFromUrl(false);
   }, POLL_MIN * 60e3);
 })();

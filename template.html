@@ -241,7 +241,7 @@ ul.plain .delta{display:inline;margin-left:6px}
     </div>
     <div class="deadline">
       <div class="big" id="daysLeft">–</div>
-      <div><b>kun qoldi</b><small id="deadlineTxt">Muddat: 28.09.2026, 23:59</small></div>
+      <div><b>kun qoldi</b><small id="deadlineTxt">Muddat: 29.09.2026, 23:59</small></div>
     </div>
   </header>
 
@@ -323,8 +323,8 @@ const toneVar=p=>p>=80?'var(--ok)':p>=50?'var(--warn)':'var(--bad)';
 // ---------- live ----------
 function fmtTime(iso){if(!iso)return '—';const d=new Date(iso);const p2=n=>String(n).padStart(2,'0');return `${p2(d.getDate())}.${p2(d.getMonth()+1)}.${d.getFullYear()}, ${p2(d.getHours())}:${p2(d.getMinutes())}`;}
 function ago(iso){if(!iso)return '';const m=Math.round((Date.now()-new Date(iso))/6e4);if(m<1)return 'hozirgina';if(m<60)return m+' daqiqa oldin';const h=Math.round(m/60);if(h<24)return h+' soat oldin';return Math.round(h/24)+' kun oldin';}
-function paintLive(){$('footUpd').textContent=fmtTime(META.updatedAt);$('liveTxt').textContent=`Live · oxirgi yangilanish: ${fmtTime(META.updatedAt)} (${ago(META.updatedAt)})`;
-  $('live').classList.toggle('stale',!META.updatedAt||Date.now()-new Date(META.updatedAt)>2*36e5);}
+function paintLive(){$('footUpd').textContent=fmtTime(META.updatedAt);$('liveTxt').textContent=`${META.source==='portal'?'Live · portaldan':'Nusxa (new.atmu.uz)'} · oxirgi yangilanish: ${fmtTime(META.updatedAt)} (${ago(META.updatedAt)})`;
+  $('live').classList.toggle('stale',META.source!=='portal'||!META.updatedAt||Date.now()-new Date(META.updatedAt)>36e5);}
 paintLive(); setInterval(paintLive,30000);
 setInterval(async()=>{try{const v=await fetch('/api/version',{cache:'no-store'}).then(r=>r.json());if(v.updatedAt&&v.updatedAt!==META.updatedAt){const y=window.scrollY;sessionStorage.setItem('akk_y',y);location.reload();}}catch(e){}},60000);
 window.addEventListener('load',()=>{try{const y=sessionStorage.getItem('akk_y');if(y){sessionStorage.removeItem('akk_y');setTimeout(()=>window.scrollTo(0,+y),50);}}catch(e){}});
