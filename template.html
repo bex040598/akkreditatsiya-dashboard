@@ -237,7 +237,7 @@ ul.plain .delta{display:inline;margin-left:6px}
       <div class="eyebrow">Ariza №KAO260075 · Ichki baholash</div>
       <h1>Hisobotlarni to‘ldirish holati</h1>
       <p id="lead">Har bir taʼlim dasturi va kompleks hisobot bo‘yicha izoh va asoslovchi hujjatlar qanchalik kiritilgani.</p>
-      <span class="live" id="live"><i></i><span id="liveTxt">Live</span></span>
+      <span class="live" id="live"><i></i><span id="liveTxt">Live</span></span> <a class="live" href="/ulash" style="text-decoration:none">⟳ Portalni ulash / yangilash</a>
     </div>
     <div class="deadline">
       <div class="big" id="daysLeft">–</div>
@@ -323,7 +323,7 @@ const toneVar=p=>p>=80?'var(--ok)':p>=50?'var(--warn)':'var(--bad)';
 // ---------- live ----------
 function fmtTime(iso){if(!iso)return '—';const d=new Date(iso);const p2=n=>String(n).padStart(2,'0');return `${p2(d.getDate())}.${p2(d.getMonth()+1)}.${d.getFullYear()}, ${p2(d.getHours())}:${p2(d.getMinutes())}`;}
 function ago(iso){if(!iso)return '';const m=Math.round((Date.now()-new Date(iso))/6e4);if(m<1)return 'hozirgina';if(m<60)return m+' daqiqa oldin';const h=Math.round(m/60);if(h<24)return h+' soat oldin';return Math.round(h/24)+' kun oldin';}
-function paintLive(){$('footUpd').textContent=fmtTime(META.updatedAt);$('liveTxt').textContent=`${META.source==='portal'?'Live · portaldan':'Nusxa (new.atmu.uz)'} · oxirgi yangilanish: ${fmtTime(META.updatedAt)} (${ago(META.updatedAt)})`;
+function paintLive(){$('footUpd').textContent=fmtTime(META.updatedAt);$('liveTxt').textContent=META.source==='portal'?`Live · portaldan · oxirgi yangilanish: ${fmtTime(META.updatedAt)} (${ago(META.updatedAt)})`:'Portaldan maʼlumot kutilmoqda';
   $('live').classList.toggle('stale',META.source!=='portal'||!META.updatedAt||Date.now()-new Date(META.updatedAt)>36e5);}
 paintLive(); setInterval(paintLive,30000);
 setInterval(async()=>{try{const v=await fetch('/api/version',{cache:'no-store'}).then(r=>r.json());if(v.updatedAt&&v.updatedAt!==META.updatedAt){const y=window.scrollY;sessionStorage.setItem('akk_y',y);location.reload();}}catch(e){}},60000);
@@ -348,6 +348,7 @@ const UPD=SENT.filter(p=>p.prev!=null);
 let first=true;
 function setNav(k){['home','list','complex','gaps'].forEach(x=>$('nav_'+x).setAttribute('aria-current',x===k?'page':'false'));}
 function route(){
+  if(!SENT.length&&!COMPLEX.rows.length){$('view').innerHTML=`<div class="panel" style="text-align:center;padding:40px 20px"><h2 style="font-family:var(--f-display);font-weight:500;font-size:20px">Portaldan maʼlumot hali kelmagan</h2><p class="muted" style="max-width:52ch;margin:10px auto 18px">Dashboard maʼlumotni to‘g‘ridan-to‘g‘ri accreditation.nqaae.uz dan oladi. Portalni bir marta ulang — shundan keyin shu yerda barcha dasturlar ko‘rinadi.</p><a href="/ulash" style="display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;padding:10px 18px;border-radius:99px">Portalni ulash →</a></div>`;return;}
   const h=location.hash.slice(1)||'umumiy';
   if(!first)window.scrollTo(0,0); first=false;
   if(h==='kompleks'){setNav('complex');return showReport(COMPLEX,{eyebrow:`Butun muassasa bo‘yicha · ${Object.keys(D.chapters.c).length} bob · ${CN} indikator`,title:'Kompleks davlat akkreditatsiyasi hisoboti',complex:true,prevC:COMPLEX.prev});}

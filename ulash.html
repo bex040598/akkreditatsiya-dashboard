@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Portalni ulash</title>
+<style>
+:root{--bg:#F3F5F6;--surface:#fff;--line:#D9E0E3;--ink:#152A33;--ink-2:#4A5E66;--accent:#0E6E75;--accent-soft:#D6ECEC}
+@media (prefers-color-scheme:dark){:root{--bg:#0F1A1F;--surface:#16252B;--line:#2A3F47;--ink:#E6EEF0;--ink-2:#A9BBC1;--accent:#4FB8BE;--accent-soft:#173C40}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;padding:32px 16px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+h1{font-size:26px;margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:12px}
+.bm{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:700;padding:10px 18px;border-radius:99px;cursor:grab}
+.muted{color:var(--ink-2);font-size:14px}
+code{background:var(--accent-soft);padding:1px 6px;border-radius:6px;word-break:break-all}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a href="/">← Dashboard</a>
+  <h1>Portalni dashboardga ulash</h1>
+  <p class="muted">Maʼlumot to‘g‘ridan-to‘g‘ri accreditation.nqaae.uz dan olinadi. Portal OneID bilan himoyalangani uchun uni siz kirgan brauzer yuboradi — hech narsa o‘rnatish shart emas.</p>
+
+  <div class="card">
+    <ol>
+      <li>Quyidagi tugmani sichqoncha bilan <b>xatcho‘plar paneliga sudrab tashlang</b> (panel ko‘rinmasa: <b>Ctrl+Shift+B</b>):<br><br>
+        <a class="bm" href="__BOOKMARKLET__" onclick="alert('Bu tugmani bosmang — xatcho‘plar paneliga sudrab tashlang, keyin portalda bosing.');return false;">⟳ Dashboardni yangilash</a></li>
+      <li>Portalni oching: <a href="https://accreditation.nqaae.uz/uz/accreditation/application/step-8/KAO260075?programId=19621&layout=main" target="_blank" rel="noopener">accreditation.nqaae.uz → step-8</a> (OneID bilan kiring).</li>
+      <li>Xatcho‘plar panelidagi <b>“⟳ Dashboardni yangilash”</b> ni bosing. O‘ng pastda oyna chiqadi — birinchi marta Render’dagi <code>PUSH_TOKEN</code> ni kiriting.</li>
+      <li>~20 soniyada barcha dasturlar va kompleks hisobot o‘qilib, dashboard yangilanadi. Portal tabi ochiq tursa, har 10 daqiqada o‘zi qayta yuboradi.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <b>To‘liq avtomatik variant (ixtiyoriy)</b>
+    <p class="muted" style="margin:6px 0 0">Har safar tugma bosmaslik uchun: Chrome’ga Tampermonkey o‘rnating va <a href="/akk.user.js">skriptni o‘rnating</a>. Shundan keyin portalni ochishingiz bilan o‘zi yuboradi.</p>
+  </div>
+</div>
+</body>
+</html>

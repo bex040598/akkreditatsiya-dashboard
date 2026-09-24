@@ -6,7 +6,7 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 const PUSH_TOKEN = process.env.PUSH_TOKEN || '';            // Render > Environment da o'rnating
-const SEED_URL = process.env.SEED_URL || 'https://new.atmu.uz/';
+const SEED_URL = process.env.SEED_URL || '';                // bo'sh: faqat portaldan
 const DEADLINE = process.env.DEADLINE || '2026-09-29T23:59:00+05:00';
 const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'data.json');
@@ -26,7 +26,7 @@ function save() {
 function loadLocal() {
   try {
     const s = JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
-    if (s && s.D) { STATE = s; log('data.json dan yuklandi', s.updatedAt); return true; }
+    if (s && s.D && (SEED_URL || s.source === 'portal')) { STATE = s; log('data.json dan yuklandi', s.updatedAt); return true; }
   } catch (e) { /* yo'q */ }
   return false;
 }
@@ -34,6 +34,7 @@ function loadLocal() {
 // new.atmu.uz (yoki boshqa statik nusxa) ichidagi "const D = {...}" ni o'qib olish
 let lastSeedJson = null;
 async function seedFromUrl(force) {
+  if (!SEED_URL) return;
   try {
     const html = await fetch(SEED_URL, { headers: { 'cache-control': 'no-cache' } }).then(r => r.text());
     const a = html.indexOf('const D = ');
@@ -101,11 +102,18 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) return send(res, 200, page(), 'text/html; charset=utf-8');
   if (req.method === 'GET' && url.pathname === '/api/version') return send(res, 200, { updatedAt: STATE.updatedAt, source: STATE.source });
   if (req.method === 'GET' && url.pathname === '/api/data') return send(res, 200, STATE);
-  if (req.method === 'GET' && url.pathname === '/akk.user.js') {
+  if (req.method === 'GET' && (url.pathname === '/akk.user.js' || url.pathname === '/akk-sync.js')) {
     const proto = req.headers['x-forwarded-proto'] || 'http';
     const origin = `${proto}://${req.headers.host}`;
-    const js = fs.readFileSync(path.join(__dirname, 'akk.user.js'), 'utf8').replace('__DASH_URL__', origin);
+    const js = fs.readFileSync(path.join(__dirname, url.pathname.slice(1)), 'utf8').replace('__DASH_URL__', origin);
     return send(res, 200, js, 'text/javascript; charset=utf-8');
+  }
+  if (req.method === 'GET' && url.pathname === '/ulash') {
+    const proto = req.headers['x-forwarded-proto'] || 'http';
+    const origin = `${proto}://${req.headers.host}`;
+    const bm = `javascript:(function(){var s=document.createElement('script');s.src='${origin}/akk-sync.js?'+Date.now();document.body.appendChild(s);})()`;
+    const html = fs.readFileSync(path.join(__dirname, 'ulash.html'), 'utf8').split('__BOOKMARKLET__').join(bm.replace(/"/g, '&quot;')).split('__ORIGIN__').join(origin);
+    return send(res, 200, html, 'text/html; charset=utf-8');
   }
   if (req.method === 'GET' && url.pathname === '/healthz') return send(res, 200, { ok: true });
   if (req.method === 'POST' && url.pathname === '/api/push') {
